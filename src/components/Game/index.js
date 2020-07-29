@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Board from '../Board';
-import { calculateWinner, generateUUID, createGame, getGameInfo } from '../../utils';
+import { calculateWinner, generateUUID, updateGame, getGameInfo } from '../../utils';
 
 const styles = {
   width: '200px',
@@ -42,7 +42,7 @@ const Game = () => {
     localStorage.removeItem('gameId');
   }
 
-  const renderGameInfo = (winner) => {
+  const renderGameInfo = () => {
     return (
       <>
       {winner==='draw' ? 'Draw! Start new game!' : (winner ? 'Winner: ' + winner : 'Player ' + nextIs  + ' turn')}
@@ -54,17 +54,15 @@ const Game = () => {
   }
 
   useEffect(() => {
-    createGame({ board, gameId })
-    // todo fix this api call
-  }, [board]);
+    updateGame({ board, gameId })
+  }, [board, gameId]);
 
   return (
     <>
     <Board squares={board}  onClick={handleClick}/>
       <div >
         <p style={styles}>
-          {renderGameInfo(winner)}
-          {/* {renderGameHistory()} */}
+          {renderGameInfo()}
         </p>
       </div>
     </>

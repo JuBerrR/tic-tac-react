@@ -1,2 +1,2 @@
 export { calculateWinner, generateUUID } from './helpers';
-export { createGame, getGameInfo } from './api';
+export { updateGame, getGameInfo } from './api';
