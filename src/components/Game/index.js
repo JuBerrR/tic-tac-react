@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Board from '../Board';
-import { calculateWinner, generateUUID, postGameInfo, getGameInfo } from '../../utils';
+import { calculateWinner, generateUUID, createGame, getGameInfo } from '../../utils';
 
 const styles = {
   width: '200px',
@@ -11,7 +11,7 @@ const emptyArray = Array(9).fill(null);
 
 const Game = () => {
   const [board, setBoard] = useState(JSON.parse(localStorage.getItem('board')) || emptyArray);
-  const [boardHistory, setBoardHistory] = useState([emptyArray]);
+  // const [boardHistory, setBoardHistory] = useState([emptyArray]);
   const [nextIs, setNextIs] = useState(localStorage.getItem('turn') || 'X');
   const [gameId, setGameId] = useState(localStorage.getItem('gameId') || generateUUID());
   const winner = calculateWinner(board);
@@ -24,7 +24,7 @@ const Game = () => {
     boardCopy[i] = nextIs==='X' ? 'X' : 'O';
 
     setBoard(boardCopy);
-    setBoardHistory([...boardHistory, boardCopy]);
+    // setBoardHistory([...boardHistory, boardCopy]);
     setNextIs(nextIs!=='X' ? 'X' : 'O');
 
     localStorage.setItem('turn', nextIs!=='X' ? 'X' : 'O');
@@ -34,7 +34,7 @@ const Game = () => {
 
   const cleanBoard = () => {
     setBoard(emptyArray);
-    setBoardHistory([emptyArray]);
+    // setBoardHistory([emptyArray]);
     setGameId(generateUUID());
 
     // turn is not need to be cleared because each game other than previous starts first
@@ -54,9 +54,9 @@ const Game = () => {
   }
 
   useEffect(() => {
-    postGameInfo({ board, gameId })
+    createGame({ board, gameId })
     // todo fix this api call
-  }, [board, gameId]);
+  }, [board]);
 
   return (
     <>
