@@ -5,7 +5,7 @@ import { calculateWinner, generateUUID, updateGame, getGameInfo } from '../../ut
 const styles = {
   width: '200px',
   margin: '20px auto',
-}
+};
 
 const emptyArray = Array(9).fill(null);
 
@@ -19,30 +19,29 @@ const Game = () => {
   const updateGameInfo = async () => {
     try {
       const response = await getGameInfo({ gameId });
-      console.log(response);
       setGameInfo(response.data.board);
       localStorage.setItem('gameInfo', JSON.stringify(response.data.board));
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   const handleClick = (i) => {
     const boardCopy = [...board]
     // if user click on occupied square or game is over, return nothing
     if (winner || boardCopy[i]) return;
     // put 'X' or 'O' on the clicked square
-    boardCopy[i] = nextIs==='X' ? 'X' : 'O';
+    boardCopy[i] = nextIs === 'X' ? 'X' : 'O';
 
     setBoard(boardCopy);
-    setNextIs(nextIs!=='X' ? 'X' : 'O');
+    setNextIs(nextIs !== 'X' ? 'X' : 'O');
 
     updateGameInfo();
 
-    localStorage.setItem('turn', nextIs!=='X' ? 'X' : 'O');
-    localStorage.setItem('board', JSON.stringify(boardCopy))
+    localStorage.setItem('turn', nextIs !== 'X' ? 'X' : 'O');
+    localStorage.setItem('board', JSON.stringify(boardCopy));
     localStorage.setItem('gameId', gameId);
-  }
+  };
 
   const cleanBoard = () => {
     setBoard(emptyArray);
@@ -52,18 +51,19 @@ const Game = () => {
     // turn is not need to be cleared because each game other than previous starts first
     localStorage.removeItem('board');
     localStorage.removeItem('gameId');
-  }
+    localStorage.removeItem('gameInfo');
+  };
 
-  const renderGameInfo = () => {
-    return (
-      <>
-      {winner==='draw' ? 'Draw! Start new game!' : (winner ? 'Winner: ' + winner : 'Player ' + nextIs  + ' turn')}
-      <button style={styles} onClick={cleanBoard}>
-        {winner ? 'Start New Game' : 'Restart'}
-      </button>
-      </>
-    )
-  }
+  const renderGameInfo = () => (
+    <>
+    {winner==='draw' ? 
+      'Draw! Start new game!' : 
+      (winner ? 'Winner: ' + winner : 'Player ' + nextIs  + ' turn')}
+    <button style={styles} onClick={cleanBoard}>
+      {winner ? 'Start New Game' : 'Restart'}
+    </button>
+    </>
+  );
 
   useEffect(() => {
     updateGame({ board, gameId })
@@ -71,15 +71,15 @@ const Game = () => {
 
   return (
     <>
-    <Board squares={board}  onClick={handleClick}/>
-      <div >
+      <Board squares={board} onClick={handleClick} />
+      <div>
         <p style={styles}>
           {renderGameInfo()}
         </p>
         <p>{!!gameInfo && JSON.stringify(gameInfo)}</p>
       </div>
     </>
-  )
-}
+  );
+};
 
 export default Game;
