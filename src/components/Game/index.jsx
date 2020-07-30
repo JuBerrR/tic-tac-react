@@ -27,7 +27,7 @@ const Game = () => {
   };
 
   const handleClick = (i) => {
-    const boardCopy = [...board]
+    const boardCopy = [...board];
     // if user click on occupied square or game is over, return nothing
     if (winner || boardCopy[i]) return;
     // put 'X' or 'O' on the clicked square
@@ -56,17 +56,17 @@ const Game = () => {
 
   const renderGameInfo = () => (
     <>
-    {winner==='draw' ? 
-      'Draw! Start new game!' : 
-      (winner ? 'Winner: ' + winner : 'Player ' + nextIs  + ' turn')}
-    <button style={styles} onClick={cleanBoard}>
-      {winner ? 'Start New Game' : 'Restart'}
-    </button>
+      {winner === 'draw'
+        ? 'Draw! Start new game!'
+        : (winner ? `Winner: ${winner}` : `Player ${nextIs} turn`)}
+      <button style={styles} onClick={cleanBoard}>
+        {winner ? 'Start New Game' : 'Restart'}
+      </button>
     </>
   );
 
   useEffect(() => {
-    updateGame({ board, gameId })
+    updateGame({ board, gameId });
   }, [board, gameId]);
 
   return (
