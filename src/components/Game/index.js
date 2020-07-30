@@ -11,10 +11,21 @@ const emptyArray = Array(9).fill(null);
 
 const Game = () => {
   const [board, setBoard] = useState(JSON.parse(localStorage.getItem('board')) || emptyArray);
-  // const [boardHistory, setBoardHistory] = useState([emptyArray]);
   const [nextIs, setNextIs] = useState(localStorage.getItem('turn') || 'X');
   const [gameId, setGameId] = useState(localStorage.getItem('gameId') || generateUUID());
+  const [gameInfo, setGameInfo] = useState(JSON.parse(localStorage.getItem('gameInfo')) || null);
   const winner = calculateWinner(board);
+
+  const updateGameInfo = async () => {
+    try {
+      const response = await getGameInfo({ gameId });
+      console.log(response);
+      setGameInfo(response.data.board);
+      localStorage.setItem('gameInfo', JSON.stringify(response.data.board));
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   const handleClick = (i) => {
     const boardCopy = [...board]
@@ -24,8 +35,9 @@ const Game = () => {
     boardCopy[i] = nextIs==='X' ? 'X' : 'O';
 
     setBoard(boardCopy);
-    // setBoardHistory([...boardHistory, boardCopy]);
     setNextIs(nextIs!=='X' ? 'X' : 'O');
+
+    updateGameInfo();
 
     localStorage.setItem('turn', nextIs!=='X' ? 'X' : 'O');
     localStorage.setItem('board', JSON.stringify(boardCopy))
@@ -34,8 +46,8 @@ const Game = () => {
 
   const cleanBoard = () => {
     setBoard(emptyArray);
-    // setBoardHistory([emptyArray]);
     setGameId(generateUUID());
+    setGameInfo(null);
 
     // turn is not need to be cleared because each game other than previous starts first
     localStorage.removeItem('board');
@@ -46,7 +58,7 @@ const Game = () => {
     return (
       <>
       {winner==='draw' ? 'Draw! Start new game!' : (winner ? 'Winner: ' + winner : 'Player ' + nextIs  + ' turn')}
-      <button style={styles} onClick={() => cleanBoard()}>
+      <button style={styles} onClick={cleanBoard}>
         {winner ? 'Start New Game' : 'Restart'}
       </button>
       </>
@@ -64,6 +76,7 @@ const Game = () => {
         <p style={styles}>
           {renderGameInfo()}
         </p>
+        <p>{!!gameInfo && JSON.stringify(gameInfo)}</p>
       </div>
     </>
   )
